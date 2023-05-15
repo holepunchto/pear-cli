@@ -1,0 +1,21 @@
+{
+  "name": "@holepunchto/pear",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "pear": "./cli.js"
+  },
+  "scripts": {
+    "lint": "standard"
+  },
+  "keywords": [],
+  "author": "Holepunch",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@holepunchto/holestrap": "^v1.0.0"
+  },
+  "devDependencies": {
+    "standard": "^17.0.0"
+  }
+}
