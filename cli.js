@@ -8,7 +8,7 @@ const PEAR_DIR = process.platform === 'darwin'
 try {
   if (process.argv[2] === 'bootstrap') throw Object.assign(new Error('rebootstrap'), { code: 'REBOOTSTRAP' })
   const fs = require('fs')
-  const hdir = path.join(PEAR_DIR, 'holestrap', 'Holepunch')
+  const hdir = path.join(PEAR_DIR, 'holestrap', process.platform === 'darwin' ? 'Holepunch' : 'holepunch')
   const swap0 = path.join(hdir, 'platform', 'stable', 'swap-0')
   const nongui = fs.existsSync(path.join(swap0, 'bin')) === false
   if (nongui) process.argv.push('--runtime', process.execPath)
