@@ -30,7 +30,7 @@ try {
     const positionals = argv.filter(([c]) => c !== '-')
     const [cmd] = positionals
     if (cmd !== 'bootstrap') positionals.length = 0
-    const [, key = 'a41n49cc7gxrgo4fz98141hbmukws3yehac5x5sx8hhognetsczo', length = null, fork = null] = positionals
+    const [, key = '6yepig4zxcfdhwewjb88tofi3wa6ibbr7kuq8m177e936hd8fdzy', length = null, fork = null] = positionals
     if (cmd !== 'bootstrap') {
       const readline = require('readline')
       readline.emitKeypressEvents(process.stdin)
