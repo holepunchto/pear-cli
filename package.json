@@ -11,9 +11,17 @@
   },
   "keywords": [],
   "author": "Holepunch",
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "dependencies": {
-    "@holepunchto/holestrap": "^v1.0.0"
+    "@holepunchto/boot-drive": "^1.0.6",
+    "corestore": "^6.5.2",
+    "graceful-goodbye": "^1.2.1",
+    "hypercore-id-encoding": "^1.0.0",
+    "hyperdrive": "^11.0.1",
+    "hyperswarm": "^4.0.0",
+    "localdrive": "^1.2.1",
+    "tiny-byte-size": "^1.1.0",
+    "unix-path-resolve": "^1.0.2"
   },
   "devDependencies": {
     "standard": "^17.0.0"
