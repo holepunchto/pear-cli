@@ -1,10 +1,10 @@
 {
   "name": "@holepunchto/pear",
   "version": "1.0.2",
-  "description": "",
+  "description": "## Getting Started",
   "main": "index.js",
   "bin": {
-    "pear": "./cli.js"
+    "pear": "cli.js"
   },
   "scripts": {
     "lint": "standard"
@@ -25,5 +25,13 @@
   },
   "devDependencies": {
     "standard": "^17.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/pear-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/holepunchto/pear-cli/issues"
+  },
+  "homepage": "https://github.com/holepunchto/pear-cli#readme"
 }
