@@ -8,7 +8,7 @@ npx pear
 
 That's it!
 
-Help: `pear`, `pear help [cmd]`, `pear[cmd] -h`
+Help: `pear`, `pear help [cmd]`, `pear [cmd] -h`
 
 Documentation: [https://docs.pears.com](https://docs.pears.com)
 
