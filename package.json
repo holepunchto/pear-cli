@@ -3,11 +3,11 @@
   "version": "1.0.3",
   "description": "pear",
   "bin": {
-    "pear": "./pear.js"
+    "pear": "pear.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holepunchto/pear.git"
+    "url": "git+https://github.com/holepunchto/pear-cli.git"
   },
   "keywords": [
     "pear"
@@ -17,11 +17,15 @@
   "bugs": {
     "url": "https://github.com/holepunchto/pear/issues"
   },
-  "homepage": "https://github.com/holepunchto/pear#readme",
+  "homepage": "https://docs.pears.com",
   "dependencies": {
     "hypercore": "^10.32.8",
     "hypercore-id-encoding": "^1.2.0",
     "pear-updater-bootstrap": "^1.0.1",
     "which-runtime": "^1.2.0"
+  },
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
