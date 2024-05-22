@@ -1,21 +1,27 @@
 {
-  "name": "@holepunchto/pear",
-  "version": "1.0.2",
-  "description": "",
-  "main": "index.js",
+  "name": "pear",
+  "version": "1.0.3",
+  "description": "pear",
   "bin": {
-    "pear": "./cli.js"
+    "pear": "./pear.js"
   },
-  "scripts": {
-    "lint": "standard"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holepunchto/pear.git"
   },
-  "keywords": [],
-  "author": "Holepunch",
-  "license": "BSD-3-Clause",
+  "keywords": [
+    "pear"
+  ],
+  "author": "Holepunch Inc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/pear/issues"
+  },
+  "homepage": "https://github.com/holepunchto/pear#readme",
   "dependencies": {
-    "@holepunchto/holestrap": "^v1.0.0"
-  },
-  "devDependencies": {
-    "standard": "^17.0.0"
+    "hypercore": "^10.32.8",
+    "hypercore-id-encoding": "^1.2.0",
+    "pear-updater-bootstrap": "^1.0.1",
+    "which-runtime": "^1.2.0"
   }
 }

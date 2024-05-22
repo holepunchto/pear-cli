@@ -1,57 +1,20 @@
-# 🍐 Pear
+# pear
 
-## Getting Started
+Install the Pear Runtime CLI
 
-### Install:
-
-```sh
-npm install -g @holepunchto/pear
 ```
-
-### Bootstrap
-
-```sh
+npm install -g pear
 pear
+pear help
 ```
 
-First run will ask to bootstrap. There is also the bootstrap command:
+That's it!
 
-```sh
-pear bootstrap
-```
+## 0.x.x line
 
-Without UI runtime functionality:
+The `pear` namespace was kindly donated by [Nicolas Herment](https://github.com/nherment),
+who wrote `pear@0.x.x` as an in-memory cache.
 
-```sh
-pear bootstrap --nongui
-```
+## License
 
-### Help
-
-**General**
-
-```sh
-pear help <cmd>
-```
-
-```sh
-pear <cmd> --help
-```
-
-```
-pear <cmd> -h
-```
-**Specific**
-
-
-```sh
-pear help <cmd>
-```
-
-```sh
-pear <cmd> --help
-```
-
-```
-pear <cmd> -h
-```
+Apache-2.0
