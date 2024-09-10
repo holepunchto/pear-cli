@@ -2,6 +2,7 @@
   "name": "pear",
   "version": "1.0.6",
   "description": "pear",
+  "main": "pear.js",
   "bin": {
     "pear": "pear.js"
   },
@@ -12,6 +13,7 @@
   "keywords": [
     "pear"
   ],
+  "files": [ "pear.key" ],
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
   "bugs": {
@@ -24,7 +26,6 @@
     "pear-updater-bootstrap": "^1.0.1",
     "which-runtime": "^1.2.0"
   },
-  "main": "cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
