@@ -6,7 +6,8 @@ const path = require('path')
 const fs = require('fs')
 const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
 
-const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8'})
+const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
+const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8'}).trim()
 const DKEY = Hypercore.discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
@@ -31,6 +32,7 @@ if (isInstalled()) {
   const bootstrap = require('pear-updater-bootstrap')
 
   console.log('Installing Pear Runtime (Please stand by, this might take a bit...)')
+  if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
   bootstrap(PEAR_KEY, PEAR_DIR).then(function () {
     console.log('Pear Runtime installed!')
     console.log()
