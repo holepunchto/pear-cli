@@ -1,6 +1,6 @@
 {
   "name": "pear",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "pear",
   "main": "pear.js",
   "bin": {
@@ -13,7 +13,9 @@
   "keywords": [
     "pear"
   ],
-  "files": [ "pear.key" ],
+  "files": [
+    "pear.key"
+  ],
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
   "bugs": {
