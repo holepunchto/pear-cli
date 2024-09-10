@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
 
-const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8'}).slice(7)
+const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8'})
 const DKEY = Hypercore.discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
