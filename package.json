@@ -1,6 +1,6 @@
 {
   "name": "pear",
-  "version": "1.0.9",
+  "version": "1.0.0-ci.0",
   "description": "pear",
   "main": "pear.js",
   "bin": {
