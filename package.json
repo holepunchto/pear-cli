@@ -22,12 +22,7 @@
     "url": "https://github.com/holepunchto/pear/issues"
   },
   "homepage": "https://docs.pears.com",
-  "dependencies": {
-    "hypercore": "^10.32.8",
-    "hypercore-id-encoding": "^1.2.0",
-    "pear-updater-bootstrap": "^1.0.1",
-    "which-runtime": "^1.2.0"
-  },
+  "dependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
