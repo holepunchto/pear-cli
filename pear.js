@@ -6,6 +6,7 @@ const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
+const prettierBytes = require('prettier-bytes')
 const Metrics = require('./metrics')
 const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
 const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim()
@@ -47,7 +48,7 @@ if (isInstalled()) {
     }
     if (clear === false) {
       const lines = stats.map(([key, s]) => {
-        return `Core ${key.slice(0, 6)} Peers=${s.peers} Blocks=${s.blocks}/s Bytes=${s.bytes}/s`
+        return `Core ${key.slice(0, 6)} Peers=${s.peers} Blocks=${s.blocks}/s Bytes=${prettierBytes(s.bytes)}/s`
       })
       process.stdout.write(lines.join('\x1b[K\n') + '\n')
     }

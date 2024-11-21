@@ -14,7 +14,8 @@
     "pear"
   ],
   "files": [
-    "pear.key", "metrics.js"
+    "pear.key",
+    "metrics.js"
   ],
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
@@ -28,6 +29,7 @@
     "hypercore": "^10.32.8",
     "hypercore-id-encoding": "^1.2.0",
     "pear-updater-bootstrap": "github:holepunchto/pear-updater-bootstrap#corestore-option",
+    "prettier-bytes": "^1.0.4",
     "which-runtime": "^1.2.0"
   },
   "scripts": {
