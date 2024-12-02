@@ -28,14 +28,16 @@ if (isInstalled()) {
 ${BIN}
 Until then, this request will be forwarded to the internal PEAR binary for you.`
   console.log(warning)
+  let child = null
   const childProcessExit = new Promise((resolve) => {
-    require('child_process').spawn(CURRENT_BIN, process.argv.slice(2), {
+    child = require('child_process').spawn(CURRENT_BIN, process.argv.slice(2), {
       stdio: 'inherit'
     }).on('exit', function (code) {
       resolve(code)
     })
   })
   goodbye(async () => {
+    child.kill()
     const code = await childProcessExit
     process.exit(code)
   })
