@@ -5,9 +5,10 @@ const os = require('os')
 const path = require('path')
 const fs = require('fs')
 const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
+const goodbye = require('graceful-goodbye')
 
 const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
-const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8'}).trim()
+const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim()
 const DKEY = Hypercore.discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
@@ -23,9 +24,19 @@ const BIN = path.join(PEAR_DIR, 'bin')
 const CURRENT_BIN = path.join(LINK, 'by-arch', HOST, 'bin/pear-runtime' + (isWindows ? '.exe' : ''))
 
 if (isInstalled()) {
-  require('child_process').spawn(CURRENT_BIN, process.argv.slice(2), {
-    stdio: 'inherit'
-  }).on('exit', function (code) {
+  const warning = `Warning! To complete the Pear-Runtime installation, add the following to the beginning of your ${isWindows ? 'Path environment variable' : '$PATH'}:
+${BIN}
+Until then, this request will be forwarded to the internal PEAR binary for you.`
+  console.log(warning)
+  const childProcessExit = new Promise((resolve) => {
+    require('child_process').spawn(CURRENT_BIN, process.argv.slice(2), {
+      stdio: 'inherit'
+    }).on('exit', function (code) {
+      resolve(code)
+    })
+  })
+  goodbye(async () => {
+    const code = await childProcessExit
     process.exit(code)
   })
 } else {
