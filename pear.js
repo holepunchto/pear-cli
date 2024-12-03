@@ -6,6 +6,10 @@ const path = require('path')
 const fs = require('fs')
 const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
+const speedometer = require('speedometer')
+const byteSize = require('tiny-byte-size')
+
+const isTTY = process.stdout.isTTY
 
 const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
 const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim()
@@ -44,9 +48,10 @@ Until then, this request will be forwarded to the internal PEAR binary for you.`
 } else {
   const bootstrap = require('pear-updater-bootstrap')
 
-  console.log('Installing Pear Runtime (Please stand by, this might take a bit...)')
+  console.log('Installing Pear Runtime (Please stand by, this might take a bit...)\n')
   if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
-  bootstrap(PEAR_KEY, PEAR_DIR).then(function () {
+  bootstrap(PEAR_KEY, PEAR_DIR, { onupdater: startDriveMonitor }).then(function () {
+    stopDriveMonitor()
     console.log('Pear Runtime installed!')
     console.log()
     console.log('Finish the installation by opening the runtime app')
@@ -89,4 +94,50 @@ function isInstalled () {
   } catch {
     return false
   }
+}
+
+let monitorInterval = null
+
+function clear () {
+  process.stdout.clearLine()
+  process.stdout.cursorTo(0)
+}
+
+function stopDriveMonitor () {
+  clearInterval(monitorInterval)
+  clear()
+}
+
+function startDriveMonitor (updater) {
+  if (!isTTY) return
+
+  const downloadSpeedometer = speedometer()
+  const uploadSpeedometer = speedometer()
+  let peers = 0
+  let downloadedBytes = 0
+  let uploadedBytes = 0
+
+  updater.drive.getBlobs().then(blobs => {
+    blobs.core.on('download', (_index, bytes) => {
+      downloadedBytes += bytes
+      downloadSpeedometer(bytes)
+    })
+    blobs.core.on('upload', (_index, bytes) => {
+      uploadedBytes += bytes
+      uploadSpeedometer(bytes)
+    })
+    blobs.core.on('peer-add', () => {
+      peers = blobs.core.peers.length
+    })
+    blobs.core.on('peer-remove', () => {
+      peers = blobs.core.peers.length
+    })
+  }).catch(() => {
+    // ignore
+  })
+
+  monitorInterval = setInterval(() => {
+    clear()
+    process.stdout.write(`[⬇ ${byteSize(downloadedBytes)} - ${byteSize(downloadSpeedometer())}/s - ${peers} peers] [⬆ ${byteSize(uploadedBytes)} - ${byteSize(uploadSpeedometer())}/s - ${peers} peers]`)
+  }, 500)
 }
