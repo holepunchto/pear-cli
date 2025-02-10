@@ -105,7 +105,7 @@ function clear () {
 
 function stopDriveMonitor () {
   clearInterval(monitorInterval)
-  clear()
+  if (isTTY) clear()
 }
 
 function startDriveMonitor (updater) {
