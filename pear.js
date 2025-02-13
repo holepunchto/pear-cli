@@ -30,7 +30,8 @@ const CURRENT_BIN = path.join(LINK, 'by-arch', HOST, 'bin/pear-runtime' + (isWin
 if (isInstalled()) {
   const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
 ${BIN}
-Until then, this executable respawns the ${'`pear`'} binary.`
+Until then, this executable spawns the ${'`pear`'} binary.
+Fix automatically with: pear run pear://runtime`
   console.error(warning)
   let child = null
   const childProcessExit = new Promise((resolve) => {
