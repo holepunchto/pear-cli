@@ -57,7 +57,7 @@ Fix automatically with: pear run pear://runtime`
     console.log()
     console.log('Finish the installation by opening the runtime app')
     console.log()
-    console.log('pear run pear://runtime')
+    console.log('npx pear run pear://runtime')
     if (makeBin()) {
       console.log()
       console.log('Or by adding the following to your path')
