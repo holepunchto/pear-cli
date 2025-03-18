@@ -47,6 +47,10 @@ Fix automatically with: pear run pear://runtime`
     process.exit(code)
   })
 } else {
+  if (isLinux && !libatomicCheck()) {
+    console.log('Error: libatomic is not installed or missing from the system.\nThe required library `libatomic.so` is necessary to install Pear.')
+    process.exit(1)
+  }
   const bootstrap = require('pear-updater-bootstrap')
 
   console.log('Installing Pear Runtime (Please stand by, this might take a bit...)\n')
@@ -141,4 +145,13 @@ function startDriveMonitor (updater) {
     clear()
     process.stdout.write(`[⬇ ${byteSize(downloadedBytes)} - ${byteSize(downloadSpeedometer())}/s - ${peers} peers] [⬆ ${byteSize(uploadedBytes)} - ${byteSize(uploadSpeedometer())}/s - ${peers} peers]`)
   }, 500)
+}
+
+function libatomicCheck () {
+  try {
+    const output = require('child_process').execSync('ldconfig -p | grep libatomic', { stdio: 'pipe' }).toString()
+    return output.includes('libatomic.so')
+  } catch (error) {
+    console.log('Error checking for libatomic:', error.message)
+  }
 }
