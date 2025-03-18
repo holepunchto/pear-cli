@@ -49,6 +49,15 @@ Fix automatically with: pear run pear://runtime`
 } else {
   if (isLinux && !libatomicCheck()) {
     console.log('Error: libatomic is not installed or missing from the system.\nThe required library `libatomic.so` is necessary to install Pear.')
+    console.log(`
+Please install it first using the appropriate package manager for your system, generally:
+
+- Debian/Ubuntu:   sudo apt install libatomic1
+- Fedora:          sudo dnf install libatomic
+- Arch Linux:      sudo pacman -S libatomic_ops
+- Alpine Linux:    sudo apk add libatomic
+- RHEL/CentOS:     sudo yum install libatomic
+`)
     process.exit(1)
   }
   const bootstrap = require('pear-updater-bootstrap')
