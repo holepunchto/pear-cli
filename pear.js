@@ -158,9 +158,22 @@ function startDriveMonitor (updater) {
 
 function libatomicCheck () {
   try {
-    const output = require('child_process').execSync('ldconfig -p | grep libatomic', { stdio: 'pipe' }).toString()
-    return output.includes('libatomic.so')
+    // Check for NixOS environment
+    if (process.env.NIX_PROFILES || process.env.NIX_PATH) {
+      // On NixOS, just skip the check since libatomic is available through the stdenv
+      return true
+    }
+    
+    // For non-NixOS systems, use the original check
+    try {
+      const output = require('child_process').execSync('ldconfig -p | grep libatomic', { stdio: 'pipe' }).toString()
+      return output.includes('libatomic.so')
+    } catch (error) {
+      console.log('Error checking for libatomic:', error.message)
+      return false
+    }
   } catch (error) {
-    console.log('Error checking for libatomic:', error.message)
+    console.log('Error in libatomic check:', error.message)
+    return false
   }
 }
