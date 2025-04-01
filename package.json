@@ -27,6 +27,7 @@
     "hypercore": "^10.32.8",
     "hypercore-id-encoding": "^1.2.0",
     "pear-updater-bootstrap": "^1.0.1",
+    "rocksdb-native": "^3.5.7",
     "speedometer": "^1.1.0",
     "tiny-byte-size": "^1.1.0",
     "which-runtime": "^1.2.0"

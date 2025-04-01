@@ -48,7 +48,7 @@ Fix automatically with: pear run pear://runtime`
   })
 } else {
   if (isLinux && !libatomicCheck()) {
-    console.log('Error: libatomic is not installed or missing from the system.\nThe required library `libatomic.so` is necessary to install Pear.')
+    console.log('Installation failed. The required library libatomic.so may not be installed or was not found on the system.')
     console.log(`
 Please install it first using the appropriate package manager for your system.
 
@@ -158,9 +158,9 @@ function startDriveMonitor (updater) {
 
 function libatomicCheck () {
   try {
-    const output = require('child_process').execSync('ldconfig -p | grep libatomic', { stdio: 'pipe' }).toString()
-    return output.includes('libatomic.so')
-  } catch (error) {
-    console.log('Error checking for libatomic:', error.message)
+    require('rocksdb-native')
+    return true
+  } catch () {
+    return false
   }
 }
