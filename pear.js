@@ -48,7 +48,7 @@ Fix automatically with: pear run pear://runtime`
   })
 } else {
   if (isLinux && !libatomicCheck()) {
-    console.log('Installation failed. The required library libatomic.so may not be installed or was not found on the system.')
+    console.log('Installation failed. The required library libatomic.so was not found on the system.')
     console.log(`
 Please install it first using the appropriate package manager for your system.
 
