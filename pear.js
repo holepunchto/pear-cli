@@ -160,7 +160,7 @@ function libatomicCheck () {
   try {
     require('rocksdb-native')
     return true
-  } catch () {
+  } catch {
     return false
   }
 }
