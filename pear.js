@@ -28,11 +28,14 @@ const BIN = path.join(PEAR_DIR, 'bin')
 const CURRENT_BIN = path.join(LINK, 'by-arch', HOST, 'bin/pear-runtime' + (isWindows ? '.exe' : ''))
 
 if (isInstalled()) {
-  const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
-${BIN}
-Until then, this executable spawns the ${'`pear`'} binary.
-Fix automatically with: pear run pear://runtime`
-  console.error(warning)
+  const systemPath = process.env.PATH || ''
+  if (!systemPath.includes(BIN)) {
+    const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
+  ${BIN}
+  Until then, this executable spawns the ${'`pear`'} binary.
+  Fix automatically with: pear run pear://runtime`
+    console.error(warning)
+  }
   let child = null
   const childProcessExit = new Promise((resolve) => {
     child = require('child_process').spawn(CURRENT_BIN, process.argv.slice(2), {
