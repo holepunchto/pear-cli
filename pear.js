@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-const Hypercore = require('hypercore')
 const HypercoreID = require('hypercore-id-encoding')
 const os = require('os')
 const path = require('path')
@@ -8,12 +7,13 @@ const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const speedometer = require('speedometer')
 const byteSize = require('tiny-byte-size')
+const { discoveryKey } = require('hypercore-crypto')
 
 const isTTY = process.stdout.isTTY
 
 const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
 const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim()
-const DKEY = Hypercore.discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
+const DKEY = discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
 
