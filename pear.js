@@ -31,7 +31,7 @@ const LINK = path.join(PEAR_DIR, 'current')
 const BIN = path.join(PEAR_DIR, 'bin')
 const CURRENT_BIN = path.join(LINK, 'by-arch', HOST, 'bin/pear-runtime' + (isWindows ? '.exe' : ''))
 
-const forceUpdate = process.argv.includes('--force-update')
+const forceUpdate = process.argv[2] === 'update'
 
 if (isInstalled() && !forceUpdate) {
   const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
@@ -70,8 +70,7 @@ Please install it first using the appropriate package manager for your system.
 
   console.log('Installing Pear Runtime (Please stand by, this might take a bit...)\n')
   if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
-  const swap = forceUpdate ? fs.realpathSync(LINK) : undefined
-  bootstrap(PEAR_KEY, PEAR_DIR, { onupdater: startDriveMonitor, length: link.drive.length, fork: link.drive.fork, force: forceUpdate, swap }).then(function (v) {
+  bootstrap(PEAR_KEY, PEAR_DIR, { onupdater: startDriveMonitor, length: link.drive.length, fork: link.drive.fork, force: forceUpdate }).then(function () {
     stopDriveMonitor()
     console.log('Pear Runtime installed!')
     console.log()
@@ -88,6 +87,13 @@ Please install it first using the appropriate package manager for your system.
       } else {
         console.log(`export PATH="${BIN}:$PATH"`)
       }
+    }
+  },
+  function (err) {
+    if (forceUpdate && err.code === 'ENOENT') {
+      console.log(`Update failed: Pear Runtime is not installed at ${err.path}`)
+    } else {
+      throw err
     }
   })
 }
