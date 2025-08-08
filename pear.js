@@ -8,15 +8,11 @@ const goodbye = require('graceful-goodbye')
 const speedometer = require('speedometer')
 const byteSize = require('tiny-byte-size')
 const { discoveryKey } = require('hypercore-crypto')
-const PearLink = require('pear-link')
 
 const isTTY = process.stdout.isTTY
 
 const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
-
-const pearLink = new PearLink()
-const link = pearLink.parse(fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim())
-const PEAR_KEY = link.origin
+const PEAR_KEY = fs.readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' }).trim()
 const DKEY = discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
@@ -70,7 +66,7 @@ Please install it first using the appropriate package manager for your system.
 
   console.log('Installing Pear Runtime (Please stand by, this might take a bit...)\n')
   if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
-  bootstrap(PEAR_KEY, PEAR_DIR, { onupdater: startDriveMonitor, length: link.drive.length, fork: link.drive.fork, force: forceUpdate }).then(function () {
+  bootstrap(PEAR_KEY, PEAR_DIR, { onupdater: startDriveMonitor, force: forceUpdate }).then(function () {
     stopDriveMonitor()
     console.log('Pear Runtime installed!')
     console.log()
