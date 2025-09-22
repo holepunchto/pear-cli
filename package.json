@@ -29,11 +29,16 @@
     "pear-updater-bootstrap": "^2.0.0",
     "rocksdb-native": "^3.5.7",
     "speedometer": "^1.1.0",
-    "standard": "^17.1.2",
     "tiny-byte-size": "^1.1.0",
     "which-runtime": "^1.2.0"
   },
   "scripts": {
-    "test": "standard"
+    "format": "prettier --write .",
+    "lint": "prettier --check .",
+    "test": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-config-holepunch": "^1.0.0"
   }
 }
