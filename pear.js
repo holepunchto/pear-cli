@@ -11,7 +11,7 @@ const { discoveryKey } = require('hypercore-crypto')
 
 const isTTY = process.stdout.isTTY
 
-const PROD_KEY = 'pear://pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'
+const PROD_KEY = 'pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o'
 const PEAR_KEY = fs
   .readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' })
   .trim()
