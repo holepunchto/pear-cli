@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const process = require('process')
 const HypercoreID = require('hypercore-id-encoding')
 const os = require('os')
 const path = require('path')
@@ -12,9 +13,7 @@ const { discoveryKey } = require('hypercore-crypto')
 const isTTY = process.stdout.isTTY
 
 const PROD_KEY = 'pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o'
-const PEAR_KEY = fs
-  .readFileSync(path.join(__dirname, 'pear.key'), { encoding: 'utf8' })
-  .trim()
+const PEAR_KEY = require('./package.json').pear.platform.key
 const DKEY = discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
 const HOST = platform + '-' + arch
@@ -145,8 +144,8 @@ function isInstalled() {
 let monitorInterval = null
 
 function clear() {
-  process.stdout.clearLine()
-  process.stdout.cursorTo(0)
+  process.stdout.write('\x1b[2K') // clear line
+  process.stdout.write('\r') // cursor to 0
 }
 
 function stopDriveMonitor() {

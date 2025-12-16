@@ -13,9 +13,11 @@
   "keywords": [
     "pear"
   ],
-  "files": [
-    "pear.key"
-  ],
+  "pear": {
+    "platform": {
+      "key": "pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o"
+    }
+  },
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
   "bugs": {
