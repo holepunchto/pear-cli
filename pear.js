@@ -12,7 +12,7 @@ const { discoveryKey } = require('hypercore-crypto')
 
 const isTTY = process.stdout.isTTY
 
-const PROD_KEY = 'pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o'
+const PROD_KEY = 'pear://w7iipxnugncq6dsda1udzgxxsnz7meoujdasr9em8tq7ca4kzdbo'
 const PEAR_KEY = require('./package.json').pear.platform.key
 const DKEY = discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
 
