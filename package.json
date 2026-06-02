@@ -1,39 +1,25 @@
 {
   "name": "pear",
   "version": "2.0.0",
-  "description": "pear",
-  "main": "pear.js",
-  "bin": {
-    "pear": "pear.js"
-  },
+  "description": "Peer-to-peer over-the-air deployment updates",
+  "files": [],
+  "bin": "install.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holepunchto/pear-cli.git"
   },
   "keywords": [
-    "pear"
+    "pear",
+    "peer-to-peer",
+    "p2p",
+    "point-to-point"
   ],
-  "pear": {
-    "platform": {
-      "key": "pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o"
-    }
-  },
   "author": "Holepunch Inc",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/holepunchto/pear/issues"
   },
   "homepage": "https://docs.pears.com",
-  "dependencies": {
-    "graceful-goodbye": "^1.3.2",
-    "hypercore-crypto": "^3.6.1",
-    "hypercore-id-encoding": "^1.2.0",
-    "pear-updater-bootstrap": "^2.0.0",
-    "rocksdb-native": "^3.5.7",
-    "speedometer": "^1.1.0",
-    "tiny-byte-size": "^1.1.0",
-    "which-runtime": "^1.2.0"
-  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check . && lunte"
