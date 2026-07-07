@@ -23,7 +23,7 @@ const forceUpdate = process.argv[2] === 'update'
 
 if (isInstalled() && !forceUpdate) {
   const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
-${BIN}
+    ${BIN}
 Until then, this executable spawns the ${'`pear`'} binary.
 Fix automatically with: pear run pear://runtime`
   console.error(warning)
