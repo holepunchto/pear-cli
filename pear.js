@@ -3,7 +3,7 @@ const process = require('process')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux, isMac } = require('which-runtime')
+const { isWindows, isLinux } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const byteSize = require('tiny-byte-size')
 
