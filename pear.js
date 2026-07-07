@@ -1,22 +1,16 @@
 #!/usr/bin/env node
 const process = require('process')
-const HypercoreID = require('hypercore-id-encoding')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux, isMac, platform, arch } = require('which-runtime')
+const { isWindows, isLinux, isMac } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
-const speedometer = require('speedometer')
 const byteSize = require('tiny-byte-size')
-const { discoveryKey } = require('hypercore-crypto')
 
 const isTTY = process.stdout.isTTY
 
-const PROD_KEY = 'pear://pzcjqmpoo6szkoc4bpkw65ib9ctnrq7b6mneeinbhbheihaq6p6o'
-const PEAR_KEY = require('./package.json').pear.platform.key
-const DKEY = discoveryKey(HypercoreID.decode(PEAR_KEY)).toString('hex')
-
-const HOST = platform + '-' + arch
+const PROD_KEY = 'pear://<KEY>'
+const PEAR_KEY = PROD_KEY
 
 const PEAR_DIR = isMac
   ? path.join(os.homedir(), 'Library', 'Application Support', 'pear')
@@ -24,14 +18,8 @@ const PEAR_DIR = isMac
     ? path.join(os.homedir(), '.config', 'pear')
     : path.join(os.homedir(), 'AppData', 'Roaming', 'pear')
 
-const LINK = path.join(PEAR_DIR, 'current')
 const BIN = path.join(PEAR_DIR, 'bin')
-const CURRENT_BIN = path.join(
-  LINK,
-  'by-arch',
-  HOST,
-  'bin/pear-runtime' + (isWindows ? '.exe' : '')
-)
+const CURRENT_BIN = path.join(BIN, `pear${isWindows ? '.exe' : ''}`)
 
 const forceUpdate = process.argv[2] === 'update'
 
@@ -72,18 +60,21 @@ Please install it first using the appropriate package manager for your system.
 `)
     process.exit(1)
   }
-  const bootstrap = require('pear-updater-bootstrap')
+  const Install = require('pear-install')
 
   console.log(
     'Installing Pear Runtime (Please stand by, this might take a bit...)\n'
   )
   if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
-  bootstrap(PEAR_KEY, PEAR_DIR, {
-    onupdater: startDriveMonitor,
-    force: forceUpdate
-  }).then(
-    function () {
-      stopDriveMonitor()
+
+  const install = new Install({ link: PEAR_KEY, to: PEAR_DIR })
+
+  if (isTTY) install.on('stats', printStats)
+
+  install.on('final', (result) => {
+    if (isTTY) clear()
+
+    if (result.success) {
       console.log('Pear Runtime installed!')
       console.log()
       console.log('Finish the installation by opening the runtime app')
@@ -100,17 +91,30 @@ Please install it first using the appropriate package manager for your system.
           console.log(`export PATH="${BIN}:$PATH"`)
         }
       }
-    },
-    function (err) {
-      if (forceUpdate && err.code === 'ENOENT') {
-        console.log(
-          `Update failed: Pear Runtime is not installed at ${err.path}`
-        )
-      } else {
-        throw err
-      }
+    } else {
+      console.error('Installation failed:', result)
+      process.exit(1)
     }
-  )
+  })
+
+  install.on('error', (err) => {
+    if (isTTY) clear()
+    if (forceUpdate && err.code === 'ENOENT') {
+      console.log(`Update failed: Pear Runtime is not installed at ${err.path}`)
+    } else {
+      throw err
+    }
+  })
+
+  install
+    .ready()
+    .catch((err) => {
+      if (isTTY) clear()
+      throw err
+    })
+    .finally(() => {
+      install.close()
+    })
 }
 
 function makeBin() {
@@ -133,63 +137,19 @@ function makeBin() {
 }
 
 function isInstalled() {
-  try {
-    const p = fs.realpathSync(LINK)
-    return path.basename(path.dirname(p)) === DKEY
-  } catch {
-    return false
-  }
+  return fs.existsSync(CURRENT_BIN)
 }
-
-let monitorInterval = null
 
 function clear() {
   process.stdout.write('\x1b[2K') // clear line
   process.stdout.write('\r') // cursor to 0
 }
-
-function stopDriveMonitor() {
-  clearInterval(monitorInterval)
-  if (isTTY) clear()
-}
-
-function startDriveMonitor(updater) {
+function printStats(stats) {
   if (!isTTY) return
-
-  const downloadSpeedometer = speedometer()
-  const uploadSpeedometer = speedometer()
-  let peers = 0
-  let downloadedBytes = 0
-  let uploadedBytes = 0
-
-  updater.drive
-    .getBlobs()
-    .then((blobs) => {
-      blobs.core.on('download', (_index, bytes) => {
-        downloadedBytes += bytes
-        downloadSpeedometer(bytes)
-      })
-      blobs.core.on('upload', (_index, bytes) => {
-        uploadedBytes += bytes
-        uploadSpeedometer(bytes)
-      })
-      blobs.core.on('peer-add', () => {
-        peers = blobs.core.peers.length
-      })
-      blobs.core.on('peer-remove', () => {
-        peers = blobs.core.peers.length
-      })
-    })
-    .catch(() => {
-      // ignore
-    })
-
-  monitorInterval = setInterval(() => {
-    clear()
-    process.stdout.write(
-      `[⬇ ${byteSize(downloadedBytes)} - ${byteSize(downloadSpeedometer())}/s - ${peers} peers] [⬆ ${byteSize(uploadedBytes)} - ${byteSize(uploadSpeedometer())}/s - ${peers} peers]`
-    )
-  }, 500)
+  clear()
+  process.stdout.write(
+    `[⬇ ${byteSize(stats.download.bytes)} - ${byteSize(stats.download.speed)}/s - ${stats.peers} peers]`
+  )
 }
 
 function libatomicCheck() {
