@@ -76,21 +76,6 @@ Please install it first using the appropriate package manager for your system.
 
     if (result.success) {
       console.log('Pear Runtime installed!')
-      console.log()
-      console.log('Finish the installation by opening the runtime app')
-      console.log()
-      console.log('npx pear run pear://runtime')
-      if (makeBin()) {
-        console.log()
-        console.log('Or by adding the following to your path')
-        console.log()
-        if (isWindows) {
-          console.log(`cmd:        set PATH="${BIN};%PATH%"`)
-          console.log(`PowerShell: $env:PATH="${BIN};$env:PATH"`)
-        } else {
-          console.log(`export PATH="${BIN}:$PATH"`)
-        }
-      }
     } else {
       console.error('Installation failed:', result)
       process.exit(1)
@@ -117,25 +102,6 @@ Please install it first using the appropriate package manager for your system.
     })
 }
 
-function makeBin() {
-  try {
-    fs.mkdirSync(BIN, { recursive: true })
-
-    if (isWindows) {
-      fs.writeFileSync(
-        path.join(BIN, 'pear.cmd'),
-        `@echo off\r\n"${CURRENT_BIN}" %*`
-      )
-      fs.writeFileSync(path.join(BIN, 'pear.ps1'), `& "${CURRENT_BIN}" @args`)
-    } else {
-      fs.symlinkSync(CURRENT_BIN, path.join(BIN, 'pear'))
-    }
-  } catch {
-    return false
-  }
-  return true
-}
-
 function isInstalled() {
   return fs.existsSync(CURRENT_BIN)
 }
@@ -144,6 +110,7 @@ function clear() {
   process.stdout.write('\x1b[2K') // clear line
   process.stdout.write('\r') // cursor to 0
 }
+
 function printStats(stats) {
   if (!isTTY) return
   clear()
