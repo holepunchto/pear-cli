@@ -9,8 +9,7 @@ const byteSize = require('tiny-byte-size')
 
 const isTTY = process.stdout.isTTY
 
-const PROD_KEY = 'pear://<KEY>'
-const PEAR_KEY = PROD_KEY
+const PEAR_KEY = 'pear://<KEY>'
 
 const PEAR_DIR = isMac
   ? path.join(os.homedir(), 'Library', 'Application Support', 'pear')
@@ -65,7 +64,7 @@ Please install it first using the appropriate package manager for your system.
   console.log(
     'Installing Pear Runtime (Please stand by, this might take a bit...)\n'
   )
-  if (PEAR_KEY !== PROD_KEY) console.log('Bootstrapping:', PEAR_KEY)
+  console.log('Bootstrapping:', PEAR_KEY)
 
   const install = new Install({ link: PEAR_KEY, to: PEAR_DIR })
 
