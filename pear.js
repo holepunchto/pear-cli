@@ -21,9 +21,7 @@ const BIN_PATH = isWindows
   : path.join(HOME, '.local', 'bin')
 const BIN = path.join(BIN_PATH, `pear${isWindows ? '.exe' : ''}`)
 
-const forceUpdate = process.argv[2] === 'update'
-
-if (fs.existsSync(BIN) && !forceUpdate) {
+if (fs.existsSync(BIN)) {
   console.error(`[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
     ${BIN_PATH}
 Until then, this executable spawns the ${'`pear`'} binary.
@@ -83,11 +81,7 @@ Please install it first using the appropriate package manager for your system.
 
   install.on('error', (err) => {
     if (isTTY) clear()
-    if (forceUpdate && err.code === 'ENOENT') {
-      console.log(`Update failed: Pear Runtime is not installed at ${err.path}`)
-    } else {
-      throw err
-    }
+    throw err
   })
 
   install
