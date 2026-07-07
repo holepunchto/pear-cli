@@ -11,13 +11,12 @@ const isTTY = process.stdout.isTTY
 
 const PEAR_KEY = 'pear://<KEY>'
 
-const PEAR_DIR = isMac
-  ? path.join(os.homedir(), 'Library', 'Application Support', 'pear')
-  : isLinux
-    ? path.join(os.homedir(), '.config', 'pear')
-    : path.join(os.homedir(), 'AppData', 'Roaming', 'pear')
-
-const BIN = path.join(PEAR_DIR, 'bin')
+const home = os.homedir()
+const localAppData =
+  process.env.LOCALAPPDATA || path.join(home, 'AppData', 'Local')
+const BIN = isWindows
+  ? path.join(localAppData, 'Programs', 'pear')
+  : path.join(home, '.local', 'bin')
 const CURRENT_BIN = path.join(BIN, `pear${isWindows ? '.exe' : ''}`)
 
 const forceUpdate = process.argv[2] === 'update'
@@ -66,7 +65,7 @@ Please install it first using the appropriate package manager for your system.
   )
   console.log('Bootstrapping:', PEAR_KEY)
 
-  const install = new Install({ link: PEAR_KEY, to: PEAR_DIR })
+  const install = new Install({ link: PEAR_KEY })
 
   if (isTTY) install.on('stats', printStats)
 
