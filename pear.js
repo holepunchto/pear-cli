@@ -23,7 +23,7 @@ const BIN = path.join(BIN_PATH, `pear${isWindows ? '.exe' : ''}`)
 
 const forceUpdate = process.argv[2] === 'update'
 
-if (isInstalled() && !forceUpdate) {
+if (fs.existsSync(BIN) && !forceUpdate) {
   const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
     ${BIN_PATH}
 Until then, this executable spawns the ${'`pear`'} binary.
@@ -100,10 +100,6 @@ Please install it first using the appropriate package manager for your system.
     .finally(() => {
       install.close()
     })
-}
-
-function isInstalled() {
-  return fs.existsSync(BIN)
 }
 
 function clear() {
