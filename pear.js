@@ -9,7 +9,7 @@ const byteSize = require('tiny-byte-size')
 
 const isTTY = process.stdout.isTTY
 
-const PEAR_KEY = 'pear://<KEY>'
+const PEAR_KEY = 'pear://smw4thqaqed9iq6bae7a9cxd4fesruixgkafe38jny33ahs33igy'
 
 const HOME = os.homedir()
 const BIN_PATH = isWindows
