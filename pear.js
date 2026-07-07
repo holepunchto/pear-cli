@@ -24,11 +24,10 @@ const BIN = path.join(BIN_PATH, `pear${isWindows ? '.exe' : ''}`)
 const forceUpdate = process.argv[2] === 'update'
 
 if (fs.existsSync(BIN) && !forceUpdate) {
-  const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
+  console.error(`[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
     ${BIN_PATH}
 Until then, this executable spawns the ${'`pear`'} binary.
-Fix automatically with: pear run pear://runtime`
-  console.error(warning)
+Fix automatically with: pear run pear://runtime`)
   let child = null
   const childProcessExit = new Promise((resolve) => {
     child = require('child_process')
