@@ -10,6 +10,7 @@ const byteSize = require('tiny-byte-size')
 const isTTY = process.stdout.isTTY
 
 const PEAR_KEY = 'pear://smw4thqaqed9iq6bae7a9cxd4fesruixgkafe38jny33ahs33igy'
+const key = PEAR_KEY
 
 const HOME = os.homedir()
 const BIN_PATH = isWindows
@@ -22,10 +23,6 @@ const BIN_PATH = isWindows
 const BIN = path.join(BIN_PATH, `pear${isWindows ? '.exe' : ''}`)
 
 if (fs.existsSync(BIN)) {
-  console.error(`[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
-    ${BIN_PATH}
-Until then, this executable spawns the ${'`pear`'} binary.
-Fix automatically with: pear run pear://runtime`)
   let child = null
   const childProcessExit = new Promise((resolve) => {
     child = require('child_process')
@@ -59,12 +56,10 @@ Please install it first using the appropriate package manager for your system.
   }
   const Install = require('pear-install')
 
-  console.log(
-    'Installing Pear Runtime (Please stand by, this might take a bit...)\n'
-  )
-  console.log('Bootstrapping:', PEAR_KEY)
+  console.log('Installing Pear (Please stand by, this might take a bit...)')
+  console.log('Bootstrapping:', key)
 
-  const install = new Install({ link: PEAR_KEY })
+  const install = new Install({ link: key })
 
   if (isTTY) install.on('stats', printStats)
 
@@ -72,7 +67,7 @@ Please install it first using the appropriate package manager for your system.
     if (isTTY) clear()
 
     if (result.success) {
-      console.log('Pear Runtime installed!')
+      console.log('Pear installed!')
     } else {
       console.error('Installation failed:', result)
       process.exit(1)
@@ -88,7 +83,7 @@ Please install it first using the appropriate package manager for your system.
     .ready()
     .catch((err) => {
       if (isTTY) clear()
-      throw err
+      console.error(err.message)
     })
     .finally(() => {
       install.close()
