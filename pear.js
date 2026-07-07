@@ -11,26 +11,28 @@ const isTTY = process.stdout.isTTY
 
 const PEAR_KEY = 'pear://<KEY>'
 
-const home = os.homedir()
-const localAppData =
-  process.env.LOCALAPPDATA || path.join(home, 'AppData', 'Local')
-const BIN = isWindows
-  ? path.join(localAppData, 'Programs', 'pear')
-  : path.join(home, '.local', 'bin')
-const CURRENT_BIN = path.join(BIN, `pear${isWindows ? '.exe' : ''}`)
+const HOME = os.homedir()
+const BIN_PATH = isWindows
+  ? path.join(
+      process.env.LOCALAPPDATA || path.join(HOME, 'AppData', 'Local'),
+      'Programs',
+      'pear'
+    )
+  : path.join(HOME, '.local', 'bin')
+const BIN = path.join(BIN_PATH, `pear${isWindows ? '.exe' : ''}`)
 
 const forceUpdate = process.argv[2] === 'update'
 
 if (isInstalled() && !forceUpdate) {
   const warning = `[ WARNING ] To complete Pear installation, prepend the following to the system ${isWindows ? 'Path environment variable' : '$PATH'}:
-    ${BIN}
+    ${BIN_PATH}
 Until then, this executable spawns the ${'`pear`'} binary.
 Fix automatically with: pear run pear://runtime`
   console.error(warning)
   let child = null
   const childProcessExit = new Promise((resolve) => {
     child = require('child_process')
-      .spawn(CURRENT_BIN, process.argv.slice(2), {
+      .spawn(BIN, process.argv.slice(2), {
         stdio: 'inherit'
       })
       .on('exit', function (code) {
@@ -101,7 +103,7 @@ Please install it first using the appropriate package manager for your system.
 }
 
 function isInstalled() {
-  return fs.existsSync(CURRENT_BIN)
+  return fs.existsSync(BIN)
 }
 
 function clear() {
