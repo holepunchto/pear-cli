@@ -38,6 +38,10 @@ if (fs.existsSync(BIN)) {
       .on('exit', function (code) {
         resolve(code)
       })
+      .on('error', function (err) {
+        console.error('Failed to run Pear:', err.message)
+        resolve(1)
+      })
   })
   goodbye(async () => {
     child.kill()
@@ -82,7 +86,8 @@ Please install it first using the appropriate package manager for your system.
 
   install.on('error', (err) => {
     if (isTTY) clear()
-    throw err
+    console.error('Installation failed:', err.message)
+    process.exit(1)
   })
 
   install
