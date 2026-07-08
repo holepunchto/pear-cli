@@ -3,11 +3,17 @@ const process = require('process')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux } = require('which-runtime')
+const { isWindows, isLinux, isMac } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const byteSize = require('tiny-byte-size')
 
 const isTTY = process.stdout.isTTY
+
+try {
+  migrateFromV2()
+} catch (err) {
+  console.log(err)
+}
 
 const PEAR_KEY = 'pear://smw4thqaqed9iq6bae7a9cxd4fesruixgkafe38jny33ahs33igy'
 const key = PEAR_KEY
@@ -110,4 +116,42 @@ function libatomicCheck() {
   } catch {
     return false
   }
+}
+
+function migrateFromV2() {
+  if (isWindows) return
+  if (!fs.existsSync(getRcPath())) return
+  const rcPath = getRcPath()
+  const oldPath = isMac
+    ? path.join(os.homedir(), 'Library', 'Application Support', 'pear', 'bin')
+    : path.join(os.homedir(), '.config', 'pear', 'bin')
+  const oldComment = '# Added by Pear Runtime, configures system with Pear CLI'
+  const rc = fs.readFileSync(rcPath, 'utf8')
+  const cleaned = rc
+    .split('\n')
+    .filter(
+      (line) =>
+        line.trimEnd() !== `export PATH="${oldPath}":$PATH` &&
+        line.trimEnd() !== oldComment
+    )
+    .join('\n')
+  if (cleaned !== rc) fs.writeFileSync(rcPath, cleaned)
+}
+
+function getRcPath() {
+  const home = os.homedir()
+
+  const candidates = [
+    '.zshrc',
+    '.zprofile',
+    '.bashrc',
+    '.bash_profile',
+    '.profile',
+    '.kshrc',
+    '.tcshrc',
+    '.cshrc'
+  ]
+
+  const existing = candidates.find((f) => fs.existsSync(path.join(home, f)))
+  return path.join(home, existing ?? candidates[0])
 }
