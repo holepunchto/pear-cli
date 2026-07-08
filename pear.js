@@ -79,7 +79,9 @@ Please install it first using the appropriate package manager for your system.
 
     if (result.success) {
       console.log('Pear installed!')
-      console.log('Please open a new terminal (or restart your current one) for the updated PATH to take effect.')
+      console.log(
+        'Please open a new terminal (or restart your current one) for the updated PATH to take effect.'
+      )
     } else {
       console.error('Installation failed:', result)
       process.exit(1)
