@@ -62,7 +62,7 @@ Please install it first using the appropriate package manager for your system.
   try {
     migrateFromV2()
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 
   const Install = require('pear-install')
