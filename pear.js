@@ -137,6 +137,7 @@ function migrateFromV2() {
       .filter(
         (line) =>
           line.trimEnd() !== `export PATH="${oldPath}":$PATH` &&
+          line.trimEnd() !== `export PATH="${oldPath}:$PATH"` &&
           line.trimEnd() !== oldComment
       )
       .join('\n')
