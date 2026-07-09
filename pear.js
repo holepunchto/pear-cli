@@ -3,7 +3,7 @@ const process = require('process')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux } = require('which-runtime')
+const { isWindows, isLinux, isMac } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const byteSize = require('tiny-byte-size')
 
@@ -32,6 +32,10 @@ if (fs.existsSync(BIN)) {
       .on('exit', function (code) {
         resolve(code)
       })
+      .on('error', function (err) {
+        console.error('Failed to run Pear:', err.message)
+        resolve(1)
+      })
   })
   goodbye(async () => {
     child.kill()
@@ -54,6 +58,13 @@ Please install it first using the appropriate package manager for your system.
 `)
     process.exit(1)
   }
+
+  try {
+    migrateFromV2()
+  } catch (err) {
+    console.error(err)
+  }
+
   const Install = require('pear-install')
 
   console.log('Installing Pear (Please stand by, this might take a bit...)')
@@ -68,6 +79,9 @@ Please install it first using the appropriate package manager for your system.
 
     if (result.success) {
       console.log('Pear installed!')
+      console.log(
+        'Please open a new terminal (or restart your current one) for the updated PATH to take effect.'
+      )
     } else {
       console.error('Installation failed:', result)
       process.exit(1)
@@ -76,7 +90,8 @@ Please install it first using the appropriate package manager for your system.
 
   install.on('error', (err) => {
     if (isTTY) clear()
-    throw err
+    console.error('Installation failed:', err.message)
+    process.exit(1)
   })
 
   install
@@ -110,4 +125,44 @@ function libatomicCheck() {
   } catch {
     return false
   }
+}
+
+function migrateFromV2() {
+  if (isWindows) return
+  const oldPath = isMac
+    ? path.join(os.homedir(), 'Library', 'Application Support', 'pear', 'bin')
+    : path.join(os.homedir(), '.config', 'pear', 'bin')
+  const oldComment = '# Added by Pear Runtime, configures system with Pear CLI'
+  for (const rcPath of getRcPaths()) {
+    const rc = fs.readFileSync(rcPath, 'utf8')
+    const cleaned = rc
+      .split('\n')
+      .filter(
+        (line) =>
+          line.trimEnd() !== `export PATH="${oldPath}":$PATH` &&
+          line.trimEnd() !== `export PATH="${oldPath}:$PATH"` &&
+          line.trimEnd() !== oldComment
+      )
+      .join('\n')
+    if (cleaned !== rc) fs.writeFileSync(rcPath, cleaned)
+  }
+}
+
+function getRcPaths() {
+  const home = os.homedir()
+
+  const candidates = [
+    '.zshrc',
+    '.zprofile',
+    '.bashrc',
+    '.bash_profile',
+    '.profile',
+    '.kshrc',
+    '.tcshrc',
+    '.cshrc'
+  ]
+
+  return candidates
+    .map((f) => path.join(home, f))
+    .filter((p) => fs.existsSync(p))
 }
