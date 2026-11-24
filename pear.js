@@ -43,22 +43,6 @@ if (fs.existsSync(BIN)) {
     process.exit(code)
   })
 } else {
-  if (isLinux && !libatomicCheck()) {
-    console.log(
-      'Installation failed. The required library libatomic.so was not found on the system.'
-    )
-    console.log(`
-Please install it first using the appropriate package manager for your system.
-
-- Debian/Ubuntu:   sudo apt install libatomic1
-- Fedora:          sudo dnf install libatomic
-- Arch Linux:      sudo pacman -S libatomic_ops
-- Alpine Linux:    sudo apk add libatomic
-- RHEL/CentOS:     sudo yum install libatomic
-`)
-    process.exit(1)
-  }
-
   try {
     migrateFromV2()
   } catch (err) {
@@ -116,15 +100,6 @@ function printStats(stats) {
   process.stdout.write(
     `[⬇ ${byteSize(stats.download.bytes)} - ${byteSize(stats.download.speed)}/s - ${stats.peers} peers]`
   )
-}
-
-function libatomicCheck() {
-  try {
-    require('rocksdb-native')
-    return true
-  } catch {
-    return false
-  }
 }
 
 function migrateFromV2() {
