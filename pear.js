@@ -3,7 +3,7 @@ const process = require('process')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux, isMac } = require('which-runtime')
+const { isWindows, isMac } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const byteSize = require('tiny-byte-size')
 
@@ -50,11 +50,27 @@ if (fs.existsSync(BIN)) {
   }
 
   const Install = require('pear-install')
+  const Corestore = require('corestore')
+  const Hyperswarm = require('hyperswarm')
+  const crypto = require('hypercore-crypto')
+  const plink = require('pear-link')
 
   console.log('Installing Pear (Please stand by, this might take a bit...)')
   console.log('Bootstrapping:', key)
 
-  const install = new Install({ link: key })
+  const rand = crypto.randomBytes(16).toString('hex')
+  const base = path.join(os.tmpdir(), 'pear-install-' + rand)
+  const corestore = new Corestore(base)
+  const swarm = new Hyperswarm()
+  swarm.on('connection', (c) => corestore.replicate(c))
+
+  const { drive } = plink.parse(key)
+  const discovery = swarm.join(crypto.discoveryKey(drive.key), {
+    server: false,
+    client: true
+  })
+
+  const install = new Install({ link: key, corestore, swarm })
 
   if (isTTY) install.on('stats', printStats)
 
@@ -84,8 +100,11 @@ if (fs.existsSync(BIN)) {
       if (isTTY) clear()
       console.error(err.message)
     })
-    .finally(() => {
-      install.close()
+    .finally(async () => {
+      await install.close()
+      await discovery.destroy()
+      await swarm.destroy()
+      await corestore.close()
     })
 }
 
