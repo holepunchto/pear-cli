@@ -99,6 +99,7 @@ if (fs.existsSync(BIN)) {
     .catch((err) => {
       if (isTTY) clear()
       console.error(err.message)
+      process.exitCode = 1
     })
     .finally(async () => {
       await install.close()
