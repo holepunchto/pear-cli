@@ -106,6 +106,7 @@ if (fs.existsSync(BIN)) {
       await discovery.destroy()
       await swarm.destroy()
       await corestore.close()
+      fs.rmSync(base, { recursive: true, force: true })
     })
 }
 
