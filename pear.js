@@ -3,7 +3,7 @@ const process = require('process')
 const os = require('os')
 const path = require('path')
 const fs = require('fs')
-const { isWindows, isLinux, isMac } = require('which-runtime')
+const { isWindows, isMac } = require('which-runtime')
 const goodbye = require('graceful-goodbye')
 const byteSize = require('tiny-byte-size')
 
@@ -43,22 +43,6 @@ if (fs.existsSync(BIN)) {
     process.exit(code)
   })
 } else {
-  if (isLinux && !libatomicCheck()) {
-    console.log(
-      'Installation failed. The required library libatomic.so was not found on the system.'
-    )
-    console.log(`
-Please install it first using the appropriate package manager for your system.
-
-- Debian/Ubuntu:   sudo apt install libatomic1
-- Fedora:          sudo dnf install libatomic
-- Arch Linux:      sudo pacman -S libatomic_ops
-- Alpine Linux:    sudo apk add libatomic
-- RHEL/CentOS:     sudo yum install libatomic
-`)
-    process.exit(1)
-  }
-
   try {
     migrateFromV2()
   } catch (err) {
@@ -66,11 +50,27 @@ Please install it first using the appropriate package manager for your system.
   }
 
   const Install = require('pear-install')
+  const Corestore = require('corestore')
+  const Hyperswarm = require('hyperswarm')
+  const crypto = require('hypercore-crypto')
+  const plink = require('pear-link')
 
   console.log('Installing Pear (Please stand by, this might take a bit...)')
   console.log('Bootstrapping:', key)
 
-  const install = new Install({ link: key })
+  const rand = crypto.randomBytes(16).toString('hex')
+  const base = path.join(os.tmpdir(), 'pear-install-' + rand)
+  const corestore = new Corestore(base)
+  const swarm = new Hyperswarm()
+  swarm.on('connection', (c) => corestore.replicate(c))
+
+  const { drive } = plink.parse(key)
+  const discovery = swarm.join(crypto.discoveryKey(drive.key), {
+    server: false,
+    client: true
+  })
+
+  const install = new Install({ link: key, corestore, swarm })
 
   if (isTTY) install.on('stats', printStats)
 
@@ -99,9 +99,14 @@ Please install it first using the appropriate package manager for your system.
     .catch((err) => {
       if (isTTY) clear()
       console.error(err.message)
+      process.exitCode = 1
     })
-    .finally(() => {
-      install.close()
+    .finally(async () => {
+      await install.close()
+      await discovery.destroy()
+      await swarm.destroy()
+      await corestore.close()
+      fs.rmSync(base, { recursive: true, force: true })
     })
 }
 
@@ -116,15 +121,6 @@ function printStats(stats) {
   process.stdout.write(
     `[⬇ ${byteSize(stats.download.bytes)} - ${byteSize(stats.download.speed)}/s - ${stats.peers} peers]`
   )
-}
-
-function libatomicCheck() {
-  try {
-    require('rocksdb-native')
-    return true
-  } catch {
-    return false
-  }
 }
 
 function migrateFromV2() {
